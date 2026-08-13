@@ -335,7 +335,14 @@ function likePost(id) {
 
 /* CREATE POST */
 
-function openPost() {
+function openPost()
+function closeProfile() {
+
+  document
+    .getElementById("profileModal")
+    .classList.add("hidden");
+
+}{
 
   document
     .getElementById("postModal")
