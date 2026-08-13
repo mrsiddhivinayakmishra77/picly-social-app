@@ -1,43 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
   <title>Picly — Social App</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="logo">Picly</div>
-    <input id="search" type="search" placeholder="Search">
-    <button id="profileBtn">Profile</button>
-  </header>
 
-  <main>
-    <section class="stories" id="stories"></section>
-    <section id="feed"></section>
-  </main>
+<header class="topbar">
+  <div class="brand">Picly</div>
 
-  <nav class="bottom-nav">
-    <button>⌂<span>Home</span></button>
-    <button>⌕<span>Search</span></button>
-    <button id="newPostBtn">＋<span>Post</span></button>
-    <button>♡<span>Activity</span></button>
-    <button id="navProfile">◯<span>Profile</span></button>
-  </nav>
-
-  <div class="modal hidden" id="postModal">
-    <div class="modal-card">
-      <h2>Create post</h2>
-      <input id="imageUrl" placeholder="Image URL">
-      <textarea id="caption" placeholder="Write a caption..."></textarea>
-      <div class="actions">
-        <button id="cancelPost">Cancel</button>
-        <button class="primary" id="publishPost">Publish</button>
-      </div>
-    </div>
+  <div class="search">
+    <span>⌕</span>
+    <input id="search" placeholder="Search">
   </div>
 
-  <script src="app.js"></script>
+  <button class="icon-btn" id="topProfile">◯</button>
+</header>
+
+<main>
+
+  <section class="stories-card">
+    <div class="stories" id="stories"></div>
+  </section>
+
+  <div id="feed"></div>
+
+</main>
+
+<nav class="bottom-nav">
+
+  <button class="nav active">
+    <b>⌂</b>
+    <small>Home</small>
+  </button>
+
+  <button class="nav">
+    <b>⌕</b>
+    <small>Search</small>
+  </button>
+
+  <button class="nav post-nav" id="newPostBtn">
+    <b>＋</b>
+    <small>Post</small>
+  </button>
+
+  <button class="nav">
+    <b>♡</b>
+    <small>Activity</small>
+  </button>
+
+  <button class="nav" id="navProfile">
+    <b>◯</b>
+    <small>Profile</small>
+  </button>
+
+</nav>
+
+<div class="modal hidden" id="postModal">
+
+  <div class="modal-card">
+
+    <div class="modal-head">
+      <h2>Create post</h2>
+      <button id="closeModal">×</button>
+    </div>
+
+    <label>Image URL</label>
+
+    <input
+      id="imageUrl"
+      placeholder="https://example.com/photo.jpg"
+    >
+
+    <label>Caption</label>
+
+    <textarea
+      id="caption"
+      placeholder="Write a caption..."
+    ></textarea>
+
+    <button class="publish" id="publishPost">
+      Share post
+    </button>
+
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
