@@ -1,7 +1,7 @@
 /* =====================================================
    PICLY - SUPABASE APP
 ===================================================== */
-
+alert("APP.JS LOADED");
 const SUPABASE_URL =
   "https://yvtpifktgngjjslitfle.supabase.co";
 
