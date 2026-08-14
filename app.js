@@ -2289,7 +2289,11 @@ async function loadInbox() {
 
           }
         );
-
+const messagePrefix =
+  lastMessage &&
+  lastMessage.sender_id === currentUser.id
+    ? "You: "
+    : profile.username + ": ";
 
       const avatar =
         profile.avatar_url ||
@@ -2326,11 +2330,11 @@ async function loadInbox() {
           </b>
 
           <span>
-            ${escapeHTML(
-              lastMessage?.content ||
-              ""
-            )}
-          </span>
+  ${escapeHTML(
+    messagePrefix +
+    (lastMessage?.content || "")
+  )}
+</span>
 
         </div>
 
