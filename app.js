@@ -2111,5 +2111,264 @@ $("chatInput")
 
     }
   );
+/* =====================================================
+   MESSAGES INBOX
+===================================================== */
+
+async function openInbox() {
+
+  if (!currentUser) {
+
+    alert("पहले login करें।");
+
+    return;
+  }
+
+  $("inboxModal")
+    .classList
+    .remove("hidden");
+
+  await loadInbox();
+
+}
+
+
+/* =====================================================
+   LOAD INBOX
+===================================================== */
+
+async function loadInbox() {
+
+  const list =
+    $("inboxList");
+
+  list.innerHTML = `
+    <div class="empty">
+      Messages loading...
+    </div>
+  `;
+
+
+  const {
+    data: messages,
+    error
+  } =
+    await supabaseClient
+      .from("messages")
+      .select(`
+        sender_id,
+        receiver_id,
+        content,
+        created_at
+      `)
+      .or(
+        "sender_id.eq." +
+        currentUser.id +
+        ",receiver_id.eq." +
+        currentUser.id
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    list.innerHTML = `
+      <div class="empty">
+        ${escapeHTML(error.message)}
+      </div>
+    `;
+
+    return;
+  }
+
+
+  if (!messages || !messages.length) {
+
+    list.innerHTML = `
+      <div class="empty">
+        अभी कोई conversation नहीं है 💬
+      </div>
+    `;
+
+    return;
+  }
+
+
+  /* FIND UNIQUE USERS */
+
+  const userIds = [];
+
+  messages.forEach(
+    function (message) {
+
+      const otherUser =
+        message.sender_id ===
+        currentUser.id
+          ? message.receiver_id
+          : message.sender_id;
+
+
+      if (
+        !userIds.includes(
+          otherUser
+        )
+      ) {
+
+        userIds.push(
+          otherUser
+        );
+
+      }
+
+    }
+  );
+
+
+  /* LOAD PROFILES */
+
+  const {
+    data: profiles,
+    error: profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id,username,name,avatar_url"
+      )
+      .in(
+        "id",
+        userIds
+      );
+
+
+  if (profileError) {
+
+    list.innerHTML = `
+      <div class="empty">
+        Profile load error
+      </div>
+    `;
+
+    return;
+  }
+
+
+  /* BUILD INBOX */
+
+  list.innerHTML = "";
+
+
+  userIds.forEach(
+    function (userId) {
+
+      const profile =
+        profiles.find(
+          function (p) {
+            return p.id === userId;
+          }
+        );
+
+
+      if (!profile)
+        return;
+
+
+      const lastMessage =
+        messages.find(
+          function (m) {
+
+            return (
+              m.sender_id === userId ||
+              m.receiver_id === userId
+            );
+
+          }
+        );
+
+
+      const avatar =
+        profile.avatar_url ||
+        (
+          "https://i.pravatar.cc/100?u=" +
+          encodeURIComponent(
+            profile.username
+          )
+        );
+
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "inbox-item";
+
+
+      item.innerHTML = `
+
+        <img
+          src="${escapeHTML(avatar)}"
+        >
+
+        <div class="inbox-info">
+
+          <b>
+            @${escapeHTML(
+              profile.username
+            )}
+          </b>
+
+          <span>
+            ${escapeHTML(
+              lastMessage?.content ||
+              ""
+            )}
+          </span>
+
+        </div>
+
+      `;
+
+
+      item.onclick =
+        async function () {
+
+          closeInbox();
+
+          await openChat(
+            profile
+          );
+
+        };
+
+
+      list.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   CLOSE INBOX
+===================================================== */
+
+function closeInbox() {
+
+  $("inboxModal")
+    .classList
+    .add("hidden");
+
+}
 
                   
