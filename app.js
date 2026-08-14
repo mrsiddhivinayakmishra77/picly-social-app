@@ -1619,5 +1619,148 @@ supabaseClient
 ===================================================== */
 
 checkSession();
+/* =====================================================
+   PROFILE PHOTO
+===================================================== */
+
+async function uploadAvatar() {
+
+  if (!currentUser) {
+    alert("पहले login करें।");
+    return;
+  }
+
+  const input =
+    document.getElementById("avatarInput");
+
+  const file =
+    input.files[0];
+
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("सिर्फ image चुनें।");
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Photo 5MB से छोटी होनी चाहिए।");
+    return;
+  }
+
+  const extension =
+    (file.name.split(".").pop() || "jpg")
+      .toLowerCase();
+
+  const filePath =
+    currentUser.id +
+    "/profile." +
+    extension;
+
+
+  /* Upload */
+
+  const {
+    error: uploadError
+  } =
+    await supabaseClient
+      .storage
+      .from("avatars")
+      .upload(
+        filePath,
+        file,
+        {
+          upsert: true
+        }
+      );
+
+
+  if (uploadError) {
+
+    alert(
+      "DP upload error:\n" +
+      uploadError.message
+    );
+
+    return;
+  }
+
+
+  /* Get public URL */
+
+  const {
+    data
+  } =
+    supabaseClient
+      .storage
+      .from("avatars")
+      .getPublicUrl(
+        filePath
+      );
+
+
+  const avatarUrl =
+    data.publicUrl +
+    "?v=" +
+    Date.now();
+
+
+  /* Save URL in profile */
+
+  const {
+    error: updateError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .update({
+        avatar_url: avatarUrl
+      })
+      .eq(
+        "id",
+        currentUser.id
+      );
+
+
+  if (updateError) {
+
+    alert(
+      "DP save error:\n" +
+      updateError.message
+    );
+
+    return;
+  }
+
+
+  currentProfile.avatar_url =
+    avatarUrl;
+
+
+  /* Show immediately */
+
+  const avatar =
+    document.getElementById(
+      "profileAvatar"
+    );
+
+
+  avatar.innerHTML = `
+
+    <img
+      src="${escapeHTML(avatarUrl)}"
+      style="
+        width:100%;
+        height:100%;
+        border-radius:50%;
+        object-fit:cover;
+      "
+    >
+
+  `;
+
+
+  alert("Profile photo updated! ✅");
+
+}
 
                   
