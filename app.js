@@ -1179,6 +1179,8 @@ async function showProfile(
   const followButton =
     $("followButton");
 
+   const messageButton =
+  $("messageButton");
 
   const logoutButton =
     $("logoutButton");
