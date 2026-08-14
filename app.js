@@ -1496,5 +1496,128 @@ $("search")
                   >
 
                   <div>
+                   <b>
+                      ${escapeHTML(
+                        user.name ||
+                        user.username
+                      )}
+                    </b>
+
+                    <small>
+                      @${escapeHTML(
+                        user.username
+                      )}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+  );
+
+
+/* =====================================================
+   SESSION
+===================================================== */
+
+async function checkSession() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .auth
+      .getSession();
+
+
+  if (error) {
+
+    console.error(
+      "Session error:",
+      error
+    );
+
+    return;
+  }
+
+
+  if (
+    !data ||
+    !data.session
+  ) {
+
+    return;
+  }
+
+
+  currentUser =
+    data.session.user;
+
+
+  await loadCurrentProfile();
+
+
+  if (currentProfile) {
+
+    openApp();
+
+  }
+
+}
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabaseClient
+  .auth
+  .onAuthStateChange(
+    async function (
+      event,
+      session
+    ) {
+
+      if (
+        event ===
+        "SIGNED_OUT"
+      ) {
+
+        currentUser = null;
+        currentProfile = null;
+
+        return;
+      }
+
+
+      if (
+        session &&
+        !currentUser
+      ) {
+
+        currentUser =
+          session.user;
+
+        await loadCurrentProfile();
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   START APP
+===================================================== */
+
+checkSession();
 
                   
