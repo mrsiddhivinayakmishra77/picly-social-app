@@ -342,6 +342,21 @@
       >
         👤
       </div>
+      <input
+  id="avatarInput"
+  type="file"
+  accept="image/*"
+  style="display:none"
+  onchange="uploadAvatar()"
+>
+
+<button
+  class="gradient-btn"
+  type="button"
+  onclick="document.getElementById('avatarInput').click()"
+>
+  Change Profile Photo
+</button>
 
 
       <h2 id="profileName"></h2>
