@@ -1762,5 +1762,347 @@ async function uploadAvatar() {
   alert("Profile photo updated! ✅");
 
 }
+/* =====================================================
+   PRIVATE MESSAGES
+===================================================== */
+
+let currentChatUser = null;
+
+
+/* =========================
+   OPEN CHAT FROM PROFILE
+========================= */
+
+function openChatFromProfile() {
+
+  if (!currentUser) {
+
+    alert("पहले login करें।");
+
+    return;
+  }
+
+  if (!currentViewedProfile) {
+
+    return;
+  }
+
+  openChat(currentViewedProfile);
+
+}
+
+
+/* =========================
+   OPEN CHAT
+========================= */
+
+async function openChat(profile) {
+
+  if (!currentUser) {
+
+    alert("पहले login करें।");
+
+    return;
+  }
+
+
+  if (
+    profile.id ===
+    currentUser.id
+  ) {
+
+    alert(
+      "आप खुद को message नहीं भेज सकते।"
+    );
+
+    return;
+  }
+
+
+  currentChatUser =
+    profile;
+
+
+  $("chatTitle")
+    .textContent =
+      "💬 @" +
+      profile.username;
+
+
+  $("chatInput")
+    .value = "";
+
+
+  $("chatModal")
+    .classList
+    .remove("hidden");
+
+
+  await loadMessages();
+
+
+  setTimeout(
+    function () {
+
+      $("chatInput")
+        .focus();
+
+    },
+    100
+  );
+
+}
+
+
+/* =========================
+   LOAD MESSAGES
+========================= */
+
+async function loadMessages() {
+
+  if (
+    !currentUser ||
+    !currentChatUser
+  ) {
+
+    return;
+  }
+
+
+  const myId =
+    currentUser.id;
+
+  const otherId =
+    currentChatUser.id;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("messages")
+      .select(
+        "id,sender_id,receiver_id,content,created_at"
+      )
+      .or(
+        "and(sender_id.eq." +
+        myId +
+        ",receiver_id.eq." +
+        otherId +
+        ")," +
+        "and(sender_id.eq." +
+        otherId +
+        ",receiver_id.eq." +
+        myId +
+        ")"
+      )
+      .order(
+        "created_at",
+        {
+          ascending: true
+        }
+      );
+
+
+  if (error) {
+
+    alert(
+      "Messages load error:\n" +
+      error.message
+    );
+
+    return;
+  }
+
+
+  renderMessages(
+    data || []
+  );
+
+}
+
+
+/* =========================
+   RENDER MESSAGES
+========================= */
+
+function renderMessages(
+  messages
+) {
+
+  const box =
+    $("chatMessages");
+
+
+  if (!messages.length) {
+
+    box.innerHTML = `
+
+      <div class="empty">
+        अभी कोई message नहीं है 💬
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  box.innerHTML =
+
+    messages
+      .map(
+        function (message) {
+
+          const mine =
+            message.sender_id ===
+            currentUser.id;
+
+
+          return `
+
+            <div
+              class="chat-message ${
+                mine
+                  ? "mine"
+                  : "theirs"
+              }"
+            >
+
+              ${escapeHTML(
+                message.content
+              )}
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+async function sendMessage() {
+
+  if (
+    !currentUser ||
+    !currentChatUser
+  ) {
+
+    return;
+  }
+
+
+  const input =
+    $("chatInput");
+
+
+  const content =
+    input.value.trim();
+
+
+  if (!content) {
+
+    return;
+  }
+
+
+  if (
+    currentChatUser.id ===
+    currentUser.id
+  ) {
+
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("messages")
+      .insert({
+
+        sender_id:
+          currentUser.id,
+
+        receiver_id:
+          currentChatUser.id,
+
+        content:
+          content
+
+      });
+
+
+  if (error) {
+
+    alert(
+      "Message send error:\n" +
+      error.message
+    );
+
+    return;
+  }
+
+
+  input.value = "";
+
+
+  await loadMessages();
+
+}
+
+
+/* =========================
+   CLOSE CHAT
+========================= */
+
+function closeChat() {
+
+  $("chatModal")
+    .classList
+    .add("hidden");
+
+
+  currentChatUser =
+    null;
+
+}
+
+
+/* =========================
+   ENTER TO SEND
+========================= */
+
+$("chatInput")
+  .addEventListener(
+    "keydown",
+    function (event) {
+
+      if (
+        event.key ===
+        "Enter"
+      ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+      }
+
+    }
+  );
 
                   
