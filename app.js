@@ -1967,19 +1967,44 @@ function renderMessages(
             currentUser.id;
 
 
+          const senderName =
+            mine
+              ? "You"
+              : (
+                  currentChatUser.username ||
+                  currentChatUser.name ||
+                  "User"
+                );
+
+
           return `
 
             <div
-              class="chat-message ${
+              class="chat-message-wrapper ${
                 mine
                   ? "mine"
                   : "theirs"
               }"
             >
 
-              ${escapeHTML(
-                message.content
-              )}
+              <div class="chat-sender">
+                ${escapeHTML(senderName)}
+              </div>
+
+
+              <div
+                class="chat-message ${
+                  mine
+                    ? "mine"
+                    : "theirs"
+                }"
+              >
+
+                ${escapeHTML(
+                  message.content
+                )}
+
+              </div>
 
             </div>
 
