@@ -1179,7 +1179,7 @@ async function showProfile(
   const followButton =
     $("followButton");
 
-   const messageButton =
+ const messageButton =
   $("messageButton");
 
   const logoutButton =
@@ -1188,28 +1188,33 @@ async function showProfile(
 
   if (isMine) {
 
-    followButton
-      .classList
-      .add("hidden");
+  followButton
+    .classList
+    .add("hidden");
 
+  messageButton
+    .classList
+    .add("hidden");
 
-    logoutButton
-      .classList
-      .remove("hidden");
+  logoutButton
+    .classList
+    .remove("hidden");
 
-  } else {
+} else {
 
-    logoutButton
-      .classList
-      .add("hidden");
+  logoutButton
+    .classList
+    .add("hidden");
 
+  followButton
+    .classList
+    .remove("hidden");
 
-    followButton
-      .classList
-      .remove("hidden");
+  messageButton
+    .classList
+    .remove("hidden");
 
-
-    await updateFollowButton();
+  await updateFollowButton();
 
   }
 
