@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>Picly</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     AUTH SCREEN
+===================================================== -->
+
+<div
+  id="authScreen"
+  class="auth-screen"
+>
+
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      Picly
+    </div>
+
+    <p class="tagline">
+      Share your world ✨
+    </p>
+
+
+    <!-- =========================
+         SIGNUP
+    ========================== -->
+
+    <div id="signupBox">
+
+      <h2>
+        Create account
+      </h2>
+
+      <input
+        id="signupUsername"
+        type="text"
+        placeholder="Username"
+        autocomplete="username"
+      >
+
+      <input
+        id="signupEmail"
+        type="email"
+        placeholder="Email"
+        autocomplete="email"
+      >
+
+      <input
+        id="signupPassword"
+        type="password"
+        placeholder="Password"
+        autocomplete="new-password"
+      >
+
+      <button
+        class="gradient-btn"
+        onclick="signup()"
+      >
+        Create Account
+      </button>
+
+      <p>
+        Already have an account?
+
+        <span onclick="showLogin()">
+          Log in
+        </span>
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         LOGIN
+    ========================== -->
+
+    <div
+      id="loginBox"
+      class="hidden"
+    >
+
+      <h2>
+        Welcome back 👋
+      </h2>
+
+      <input
+        id="loginUsername"
+        type="text"
+        placeholder="Username"
+        autocomplete="username"
+      >
+
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+
+      <button
+        class="gradient-btn"
+        onclick="login()"
+      >
+        Login
+      </button>
+
+      <p>
+        New to Picly?
+
+        <span onclick="showSignup()">
+          Create account
+        </span>
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN APP
+===================================================== -->
+
+<div
+  id="app"
+  class="hidden"
+>
+
+
+  <!-- =========================
+       TOP BAR
+  ========================== -->
+
+  <header class="topbar">
+
+    <div class="brand">
+      Picly
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search">
+
+      🔍
+
+      <input
+        id="search"
+        type="search"
+        placeholder="Search"
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <!-- PROFILE BUTTON -->
+
+    <button
+      id="profileButton"
+      onclick="openProfile()"
+      aria-label="Profile"
+    >
+      👤
+    </button>
+
+  </header>
+
+
+
+  <!-- =================================================
+       MAIN CONTENT
+  ================================================= -->
+
+  <main>
+
+
+    <!-- =========================
+         STORIES
+    ========================== -->
+
+    <section class="stories-card">
+
+      <div
+        class="stories"
+        id="stories"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================
+         USER SEARCH RESULTS
+    ========================== -->
+
+    <div
+      id="userSearchResults"
+      class="user-search-results"
+    ></div>
+
+
+    <!-- =========================
+         POSTS FEED
+    ========================== -->
+
+    <div
+      id="feed"
+    ></div>
+
+  </main>
+
+
+
+  <!-- =================================================
+       BOTTOM NAVIGATION
+  ================================================= -->
+
+  <nav class="bottom-nav">
+
+
+    <!-- HOME -->
+
+    <button
+      type="button"
+    >
+
+      🏠
+
+      <small>
+        Home
+      </small>
+
+    </button>
+
+
+    <!-- SEARCH -->
+
+    <button
+      type="button"
+      onclick="
+        document
+          .getElementById('search')
+          .focus()
+      "
+    >
+
+      🔍
+
+      <small>
+        Search
+      </small>
+
+    </button>
+
+
+    <!-- CREATE POST -->
+
+    <button
+      class="post-button"
+      type="button"
+      onclick="openPost()"
+      aria-label="Create Post"
+    >
+      ＋
+    </button>
+
+
+    <!-- ACTIVITY -->
+
+    <button
+      type="button"
+    >
+
+      ❤️
+
+      <small>
+        Activity
+      </small>
+
+    </button>
+
+
+    <!-- PROFILE -->
+
+    <button
+      type="button"
+      onclick="openProfile()"
+    >
+
+      👤
+
+      <small>
+        Profile
+      </small>
+
+    </button>
+
+  </nav>
+
+
+
+  <!-- =================================================
+       CREATE POST MODAL
+  ================================================= -->
+
+  <div
+    id="postModal"
+    class="modal hidden"
+  >
+
+    <div
+      class="modal-card"
+    >
+
+      <h2>
+        Create Post
+      </h2>
+
+
+      <!-- =========================
+           DIRECT PHOTO SELECT
+      ========================== -->
+
+      <input
+        id="postImage"
+        type="file"
+        accept="image/*"
+      >
+
+
+      <!-- CAPTION -->
+
+      <textarea
+        id="caption"
+        placeholder="Write a caption..."
+      ></textarea>
+
+
+      <!-- SHARE -->
+
+      <button
+        class="gradient-btn"
+        onclick="publishPost()"
+      >
+        Share Post
+      </button>
+
+
+      <!-- CANCEL -->
+
+      <button
+        class="close"
+        onclick="closePost()"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =================================================
+       PROFILE MODAL
+  ================================================= -->
+
+  <div
+    id="profileModal"
+    class="modal hidden"
+  >
+
+    <div
+      class="modal-card profile-card"
+    >
+
+
+      <!-- =========================
+           BACK BUTTON
+      ========================== -->
+
+      <button
+        class="profile-close"
+        onclick="closeProfile()"
+      >
+        ← Back
+      </button>
+
+
+      <!-- =========================
+           PROFILE AVATAR
+      ========================== -->
+
+      <div
+        id="profileAvatar"
+        class="big-avatar"
+      >
+        👤
+      </div>
+
+
+      <!-- =========================
+           USERNAME
+      ========================== -->
+
+      <h2
+        id="profileName"
+      ></h2>
+
+
+      <!-- =========================
+           EMAIL
+      ========================== -->
+
+      <p
+        id="profileEmail"
+      ></p>
+
+
+      <!-- =========================
+           BIO
+      ========================== -->
+
+      <p
+        id="profileBio"
+      ></p>
+
+
+      <!-- =========================
+           PROFILE STATS
+      ========================== -->
+
+      <div class="stats">
+
+
+        <!-- POSTS -->
+
+        <div>
+
+          <b
+            id="postCount"
+          >
+            0
+          </b>
+
+          <span>
+            Posts
+          </span>
+
+        </div>
+
+
+        <!-- FOLLOWERS -->
+
+        <div>
+
+          <b
+            id="followerCount"
+          >
+            0
+          </b>
+
+          <span>
+            Followers
+          </span>
+
+        </div>
+
+
+        <!-- FOLLOWING -->
+
+        <div>
+
+          <b
+            id="followingCount"
+          >
+            0
+          </b>
+
+          <span>
+            Following
+          </span>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =========================
+           FOLLOW BUTTON
+      ========================== -->
+
+      <button
+        id="followButton"
+        class="gradient-btn hidden"
+        onclick="toggleFollow()"
+      >
+        Follow
+      </button>
+
+
+      <!-- =========================
+           LOGOUT
+      ========================== -->
+
+      <button
+        id="logoutButton"
+        class="gradient-btn"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
+<script
+  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<!-- =====================================================
+     PICLY APP
+===================================================== -->
+
+<script src="app.js"></script>
+
+
+</body>
+
+        </html>
