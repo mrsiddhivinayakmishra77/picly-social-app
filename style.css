@@ -620,3 +620,61 @@ main {
 .profile-close:hover {
   background: #e7ddff;
 }
+/* =====================================================
+   MESSAGE INBOX PROFILE PHOTO
+===================================================== */
+
+.inbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.inbox-item img {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  max-width: 48px;
+  max-height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* =====================================================
+   USER SEARCH PROFILE PHOTO
+===================================================== */
+
+.user-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.user-result img {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  min-height: 45px;
+  max-width: 45px;
+  max-height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* SEARCH TEXT */
+
+.user-result > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-result small {
+  opacity: 0.7;
+}
