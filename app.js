@@ -1929,20 +1929,18 @@ async function loadMessages() {
 
 }
 
+/* =====================================================
+   RENDER CHAT MESSAGES
+===================================================== */
 
-/* =========================
-   RENDER MESSAGES
-========================= */
+function renderMessages(messages) {
 
-function renderMessages(
-  messages
-) {
-
-  const box =
-    $("chatMessages");
+  const box = $("chatMessages");
 
 
-  if (!messages.length) {
+  /* NO MESSAGES */
+
+  if (!messages || !messages.length) {
 
     box.innerHTML = `
 
@@ -1956,64 +1954,71 @@ function renderMessages(
   }
 
 
-  box.innerHTML =
+  /* RENDER EVERY MESSAGE */
 
-    messages
-      .map(
-        function (message) {
-
-          const mine =
-            message.sender_id ===
-            currentUser.id;
+  box.innerHTML = messages
+    .map(function (message) {
 
 
-          const senderName =
+      /* WHO SENT IT? */
+
+      const mine =
+        message.sender_id ===
+        currentUser.id;
+
+
+      /* NAME */
+
+      const senderName =
+        mine
+          ? "You"
+          : (
+              currentChatUser.username ||
+              currentChatUser.name ||
+              "User"
+            );
+
+
+      /* MESSAGE */
+
+      return `
+
+        <div
+          class="chat-message-wrapper ${
             mine
-              ? "You"
-              : (
-                  currentChatUser.username ||
-                  currentChatUser.name ||
-                  "User"
-                );
+              ? "mine"
+              : "theirs"
+          }"
+        >
+
+          <div class="chat-sender">
+            ${escapeHTML(senderName)}
+          </div>
 
 
-          return `
+          <div
+            class="chat-message ${
+              mine
+                ? "mine"
+                : "theirs"
+            }"
+          >
 
-            <div
-              class="chat-message-wrapper ${
-                mine
-                  ? "mine"
-                  : "theirs"
-              }"
-            >
+            ${escapeHTML(
+              message.content
+            )}
 
-              <div class="chat-sender">
-                ${escapeHTML(senderName)}
-              </div>
+          </div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
 
 
-              <div
-                class="chat-message ${
-                  mine
-                    ? "mine"
-                    : "theirs"
-                }"
-              >
-
-                ${escapeHTML(
-                  message.content
-                )}
-
-              </div>
-
-            </div>
-
-          `;
-
-        }
-      )
-      .join("");
-
+  /* SCROLL TO BOTTOM */
 
   box.scrollTop =
     box.scrollHeight;
